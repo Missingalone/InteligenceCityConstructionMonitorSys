@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: system
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL:jdbc:mysql://localhost:3306/inteligence_city_monitor_sys?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+server:
+  port: ${SERVER_PORT:8002}
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+logging:
+  level:
+    com.cyx.system: debug
+
+auth:
+  jwt:
+    secret: ${AUTH_JWT_SECRET}
