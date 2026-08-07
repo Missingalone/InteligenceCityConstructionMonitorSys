@@ -27,6 +27,7 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
+        // 认证完成后只向客户端返回 token，不返回密码散列或完整用户对象。
         String token = jwtTokenService.createToken((UserDetails) authentication.getPrincipal());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");

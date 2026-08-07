@@ -23,6 +23,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Override
     public UserDetails loadUserByUsername(String username) {
+        // 登录时只读取未被逻辑删除的用户；MyBatis-Plus 会自动拼接 deleted = 0。
         SysUser user = userMapper.selectOne(Wrappers.<SysUser>lambdaQuery()
                 .eq(SysUser::getUsername, username));
         if (user == null) {
@@ -33,8 +34,10 @@ public class UserDetailsService implements org.springframework.security.core.use
         }
 
         Set<SimpleGrantedAuthority> authorities = new LinkedHashSet<>();
+        // 角色供 hasRole 使用，Spring Security 约定角色授权必须以 ROLE_ 开头。
         userMapper.selectRoleCodesByUserId(user.getId()).forEach(roleCode ->
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + roleCode)));
+        // 菜单按钮权限供 hasAuthority("模块:资源:动作") 直接校验。
         userMapper.selectPermissionCodesByUserId(user.getId()).forEach(permissionCode ->
                 authorities.add(new SimpleGrantedAuthority(permissionCode)));
 

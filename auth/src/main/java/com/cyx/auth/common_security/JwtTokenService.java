@@ -30,6 +30,7 @@ public class JwtTokenService {
 
     public String createToken(UserDetails userDetails) {
         Instant now = Instant.now();
+        // 将角色和按钮权限写进 token，业务模块无需再次查询权限表即可完成鉴权。
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .filter(authority -> authority.startsWith("ROLE_"))
@@ -52,6 +53,7 @@ public class JwtTokenService {
 
     public Optional<Claims> parseToken(String token) {
         try {
+            // verifyWith 会同时校验签名和 expiration，校验失败的 token 不会建立认证上下文。
             return Optional.of(Jwts.parser().verifyWith(signingKey).build()
                     .parseSignedClaims(token).getPayload());
         } catch (JwtException | IllegalArgumentException exception) {

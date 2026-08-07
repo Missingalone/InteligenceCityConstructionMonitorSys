@@ -30,6 +30,7 @@ public class SecurityConfig {
             LogoutSuccessHandler logoutSuccessHandler) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                // JWT 自带认证信息，服务端不创建 HttpSession。
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .exceptionHandling(exception -> exception
@@ -39,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login", "/error").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
+                        // Spring Security 在这里完成用户名密码认证，成功后由成功处理器签发 JWT。
                         .loginProcessingUrl("/auth/login")
                         .successHandler(authenticationSuccessHandler)
                         .failureHandler(authenticationFailureHandler)

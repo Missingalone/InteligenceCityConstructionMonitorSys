@@ -35,6 +35,7 @@ public class SystemJwtAuthenticationFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ") && SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
                 Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(header.substring(7)).getPayload();
+                // auth 模块签发的 token 同时包含角色和权限；两者都要恢复，否则 hasAuthority 会失效。
                 List<SimpleGrantedAuthority> authorities = list(claims, "roles").stream()
                         .map(role -> new SimpleGrantedAuthority("ROLE_" + role)).collect(java.util.stream.Collectors.toList());
                 authorities.addAll(list(claims, "permissions").stream().map(SimpleGrantedAuthority::new).toList());

@@ -17,6 +17,7 @@ public class SystemSecurityConfig {
     SecurityFilterChain systemSecurityFilterChain(HttpSecurity http, SystemJwtAuthenticationFilter filter,
                                                    ObjectMapper objectMapper) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
+                // system 是独立服务，使用同一个 JWT 密钥进行无状态鉴权。
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(a -> a.anyRequest().authenticated())
                 .exceptionHandling(e -> e

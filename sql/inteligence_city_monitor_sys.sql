@@ -134,6 +134,7 @@ CREATE TABLE IF NOT EXISTS sys_operation_log (
 
 CREATE TABLE IF NOT EXISTS biz_enterprise (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    organization_id BIGINT DEFAULT NULL,
     enterprise_name VARCHAR(150) NOT NULL,
     unified_social_credit_code VARCHAR(50) DEFAULT NULL,
     legal_representative VARCHAR(50) DEFAULT NULL,
@@ -146,6 +147,7 @@ CREATE TABLE IF NOT EXISTS biz_enterprise (
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted TINYINT NOT NULL DEFAULT 0,
     UNIQUE KEY uk_enterprise_credit_code (unified_social_credit_code)
+    ,KEY idx_enterprise_organization_id (organization_id)
 ) ENGINE=InnoDB COMMENT='Construction enterprise';
 
 CREATE TABLE IF NOT EXISTS biz_project (

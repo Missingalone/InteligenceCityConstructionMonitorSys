@@ -28,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = resolveToken(request);
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             jwtTokenService.parseToken(token).ifPresent(claims -> {
+                // 还原为 Spring Security 的 GrantedAuthority，供后续 @PreAuthorize 使用。
                 List<SimpleGrantedAuthority> authorities = jwtTokenService.getRoles(claims).stream()
                         .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                         .collect(java.util.stream.Collectors.toList());

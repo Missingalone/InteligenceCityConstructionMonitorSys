@@ -53,6 +53,7 @@ public class SysUserServiceImpl implements SysUserService {
 
         SysUser user = new SysUser();
         BeanUtils.copyProperties(dto, user);
+        // 数据库只保存 BCrypt 密码散列，登录时由 Spring Security 对明文密码进行比对。
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         userMapper.insert(user);
         replaceRoles(user.getId(), dto.getRoleIds());
@@ -79,6 +80,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     private void replaceRoles(Long userId, List<Long> roleIds) {
+        // 用户角色采用全量替换，避免前端提交的新角色与旧角色残留混合。
         userRoleMapper.delete(Wrappers.<SysUserRole>lambdaQuery().eq(SysUserRole::getUserId, userId));
         for (Long roleId : roleIds == null ? Collections.<Long>emptyList() : roleIds) {
             SysUserRole relation = new SysUserRole();
