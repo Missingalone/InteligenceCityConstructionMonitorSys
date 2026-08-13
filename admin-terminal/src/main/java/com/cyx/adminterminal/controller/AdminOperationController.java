@@ -26,7 +26,7 @@ public class AdminOperationController {
      * 查询运营总览。
      */
     @GetMapping("/dashboard")
-    @PreAuthorize("hasAuthority('admin:dashboard:view')")
+//    @PreAuthorize("hasAuthority('admin:dashboard:view')")
     public Result<DashboardStatsVO> dashboard() {
         return Result.success(service.dashboard());
     }

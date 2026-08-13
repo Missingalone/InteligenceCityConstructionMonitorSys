@@ -1,4 +1,5 @@
 /Users/root1/project/JavaProject/InteligenceCityMonitorSys/common/src/main/java/com/cyx/Enums/ResultCodeEnum.java
+/Users/root1/project/JavaProject/InteligenceCityMonitorSys/common/src/main/java/com/cyx/annotation/Log.java
 /Users/root1/project/JavaProject/InteligenceCityMonitorSys/common/src/main/java/com/cyx/exception/BusException.java
 /Users/root1/project/JavaProject/InteligenceCityMonitorSys/common/src/main/java/com/cyx/exception/GlobalExceptionHandler.java
 /Users/root1/project/JavaProject/InteligenceCityMonitorSys/common/src/main/java/com/cyx/result/Result.java

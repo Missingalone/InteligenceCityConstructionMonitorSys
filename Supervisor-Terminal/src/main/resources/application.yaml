@@ -3,7 +3,7 @@ spring:
     name: supervisor-terminal
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL:jdbc:mysql://localhost:3306/inteligence_city_monitor_sys?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true}
+    url: jdbc:mysql://localhost:3306/inteligence_city_monitor_sys?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
@@ -23,3 +23,33 @@ mybatis-plus:
 auth:
   jwt:
     secret: ${AUTH_JWT_SECRET}
+
+logging:
+  level:
+    root: INFO
+
+    # Spring
+    org.springframework: INFO
+
+    # MyBatis SQL
+    com.baomidou.mybatisplus: DEBUG
+    org.mybatis: DEBUG
+
+    # JDBC SQL
+    java.sql: DEBUG
+
+    # 数据库连接池
+    com.zaxxer.hikari: DEBUG
+
+    # Nacos
+    com.alibaba.nacos: INFO
+
+    # Dubbo
+    org.apache.dubbo: INFO
+
+    # 自己项目代码
+    com.cyx: DEBUG
+
+  # 日志输出格式
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"

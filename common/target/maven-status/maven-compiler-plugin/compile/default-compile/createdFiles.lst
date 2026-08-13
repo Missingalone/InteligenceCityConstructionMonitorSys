@@ -1,3 +1,4 @@
+com/cyx/annotation/Log.class
 com/cyx/exception/BusException.class
 com/cyx/result/Result.class
 com/cyx/Enums/ResultCodeEnum.class

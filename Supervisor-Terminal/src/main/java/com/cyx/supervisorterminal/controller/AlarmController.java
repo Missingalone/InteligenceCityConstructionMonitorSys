@@ -2,6 +2,7 @@ package com.cyx.supervisorterminal.controller;
 
 import com.cyx.result.Result;
 import com.cyx.supervisorterminal.entity.dto.AlarmHandleDTO;
+import com.cyx.supervisorterminal.entity.dto.AlarmCloseDTO;
 import com.cyx.supervisorterminal.entity.vo.AlarmRecordVO;
 import com.cyx.supervisorterminal.service.AlarmService;
 import jakarta.validation.Valid;
@@ -39,5 +40,15 @@ public class AlarmController {
     public Result<Void> handle(@PathVariable Long id, @Valid @RequestBody AlarmHandleDTO dto) {
         alarmService.handle(id, dto);
         return Result.success("处理成功", null);
+    }
+
+    /**
+     * 关闭已解决告警，关闭后不再允许继续处理或下发整改。
+     */
+    @PutMapping("/{id}/close")
+    @PreAuthorize("hasAuthority('supervisor:alarm:close')")
+    public Result<Void> close(@PathVariable Long id, @Valid @RequestBody AlarmCloseDTO dto) {
+        alarmService.close(id, dto);
+        return Result.success("告警已关闭", null);
     }
 }

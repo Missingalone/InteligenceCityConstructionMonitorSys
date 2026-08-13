@@ -18,6 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 用户服务实现 — 用户 CRUD、角色分配、密码重置、状态管理。
+ * <p>
+ * 密码使用 BCrypt 存储，重置时直接替换散列值而非修改明文。
+ * 状态为停用的用户 Spring Security 会拒绝认证（需配合 UserDetailsService）。
+ */
 @Service
 public class SysUserServiceImpl implements SysUserService {
 
@@ -38,8 +44,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public UserVO getById(Long id) {
-        SysUser user = requireUser(id);
-        return toVO(user);
+        return toVO(requireUser(id));
     }
 
     @Override
@@ -50,10 +55,8 @@ public class SysUserServiceImpl implements SysUserService {
         if (count > 0) {
             throw new BusException("用户名已存在");
         }
-
         SysUser user = new SysUser();
         BeanUtils.copyProperties(dto, user);
-        // 数据库只保存 BCrypt 密码散列，登录时由 Spring Security 对明文密码进行比对。
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         userMapper.insert(user);
         replaceRoles(user.getId(), dto.getRoleIds());
@@ -64,6 +67,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Transactional(rollbackFor = Exception.class)
     public void update(UserUpdateDTO dto) {
         SysUser user = requireUser(dto.getId());
+        // 保护字段：username、password 不通过 update 接口修改，避免误操作
         BeanUtils.copyProperties(dto, user, "username", "password", "passwordHash", "roleIds", "createdAt", "updatedAt");
         userMapper.updateById(user);
         if (dto.getRoleIds() != null) {
@@ -79,8 +83,28 @@ public class SysUserServiceImpl implements SysUserService {
         userMapper.deleteById(id);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void resetPassword(Long id, String newPassword) {
+        SysUser user = requireUser(id);
+        if (newPassword == null || newPassword.length() < 8 || newPassword.length() > 64) {
+            throw new BusException("密码长度必须为8到64位");
+        }
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userMapper.updateById(user);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void toggleStatus(Long id) {
+        SysUser user = requireUser(id);
+        // 0→1 或 1→0，使用位运算翻转
+        user.setStatus(user.getStatus() == 1 ? 0 : 1);
+        userMapper.updateById(user);
+    }
+
+    /** 全量替换用户角色 — 先删后增 */
     private void replaceRoles(Long userId, List<Long> roleIds) {
-        // 用户角色采用全量替换，避免前端提交的新角色与旧角色残留混合。
         userRoleMapper.delete(Wrappers.<SysUserRole>lambdaQuery().eq(SysUserRole::getUserId, userId));
         for (Long roleId : roleIds == null ? Collections.<Long>emptyList() : roleIds) {
             SysUserRole relation = new SysUserRole();
@@ -101,6 +125,7 @@ public class SysUserServiceImpl implements SysUserService {
     private UserVO toVO(SysUser user) {
         UserVO vo = new UserVO();
         BeanUtils.copyProperties(user, vo);
+        // 补充角色编码列表，前端用于展示和权限判断
         vo.setRoleCodes(userMapper.selectRoleCodesByUserId(user.getId()));
         return vo;
     }

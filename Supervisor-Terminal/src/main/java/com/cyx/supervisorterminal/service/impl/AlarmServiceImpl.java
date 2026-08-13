@@ -3,6 +3,7 @@ package com.cyx.supervisorterminal.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.cyx.exception.BusException;
 import com.cyx.supervisorterminal.entity.dto.AlarmHandleDTO;
+import com.cyx.supervisorterminal.entity.dto.AlarmCloseDTO;
 import com.cyx.supervisorterminal.entity.po.BizAlarmRecord;
 import com.cyx.supervisorterminal.entity.po.BizAlarmRule;
 import com.cyx.supervisorterminal.entity.po.BizDevice;
@@ -83,10 +84,29 @@ public class AlarmServiceImpl implements AlarmService {
     @Override
     public void handle(Long id, AlarmHandleDTO dto) {
         BizAlarmRecord alarm = requireAccessibleAlarm(id);
+        if ("RESOLVED".equals(alarm.getAlarmStatus()) || "CLOSED".equals(alarm.getAlarmStatus())) {
+            throw new BusException("已解决或已关闭的告警不能再次处理");
+        }
         alarm.setAlarmStatus(dto.isResolved() ? "RESOLVED" : "HANDLING");
         alarm.setHandlerId(currentUserAccess.userId());
         alarm.setHandledAt(LocalDateTime.now());
         alarm.setHandleRemark(dto.getHandleRemark());
+        alarmMapper.updateById(alarm);
+    }
+
+    /**
+     * 只有已经解决的告警才能关闭，防止跳过实际处理过程直接结束告警。
+     */
+    @Override
+    public void close(Long id, AlarmCloseDTO dto) {
+        BizAlarmRecord alarm = requireAccessibleAlarm(id);
+        if (!"RESOLVED".equals(alarm.getAlarmStatus())) {
+            throw new BusException("只有已解决的告警才能关闭");
+        }
+        alarm.setAlarmStatus("CLOSED");
+        alarm.setHandlerId(currentUserAccess.userId());
+        alarm.setHandledAt(LocalDateTime.now());
+        alarm.setHandleRemark(dto.getCloseRemark());
         alarmMapper.updateById(alarm);
     }
 

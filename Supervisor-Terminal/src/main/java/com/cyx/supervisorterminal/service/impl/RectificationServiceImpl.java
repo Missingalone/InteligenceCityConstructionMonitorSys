@@ -40,8 +40,14 @@ public class RectificationServiceImpl implements RectificationService {
         BizAlarmRecord alarm = alarmMapper.selectById(dto.getAlarmId());
         if (alarm == null) throw new BusException("告警不存在");
         requireProjectAccess(alarm.getProjectId());
+        // 已解决或已关闭告警不允许重新进入整改流程。
+        if (!"PENDING".equals(alarm.getAlarmStatus()) && !"HANDLING".equals(alarm.getAlarmStatus())) {
+            throw new BusException("当前告警状态不允许下发整改");
+        }
         long active = orderMapper.selectCount(Wrappers.<BizRectificationOrder>lambdaQuery()
-                .eq(BizRectificationOrder::getAlarmId, alarm.getId()).in(BizRectificationOrder::getStatus, "PENDING", "SUBMITTED"));
+                // 被驳回的整改单应由企业重新提交，不能再创建一张重复整改单。
+                .eq(BizRectificationOrder::getAlarmId, alarm.getId())
+                .in(BizRectificationOrder::getStatus, "PENDING", "SUBMITTED", "REJECTED"));
         if (active > 0) throw new BusException("该告警已有未完成整改单");
         BizProject project = projectMapper.selectById(alarm.getProjectId());
         BizRectificationOrder order = new BizRectificationOrder();

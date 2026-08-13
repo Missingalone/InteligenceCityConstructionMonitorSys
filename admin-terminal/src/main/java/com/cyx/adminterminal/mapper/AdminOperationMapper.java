@@ -11,7 +11,9 @@ import com.cyx.adminterminal.entity.vo.*; import org.apache.ibatis.annotations.*
       (SELECT COUNT(*) FROM biz_public_feedback WHERE deleted=0 AND status='PENDING') pending_feedback_count
       """)
     DashboardStatsVO selectDashboard();
-    /** 查询全部公众反馈。 */ @Select("SELECT * FROM biz_public_feedback WHERE deleted=0 ORDER BY id DESC") List<AdminFeedbackVO> selectFeedback();
+    /** 查询全部公众反馈。 */
+    @Select("SELECT * FROM biz_public_feedback WHERE deleted=0 ORDER BY id DESC")
+    List<AdminFeedbackVO> selectFeedback();
     /** 处理反馈并通过用户名写入处理人。 */
     @Update("""
             UPDATE biz_public_feedback f JOIN sys_user u ON u.username=#{username} AND u.deleted=0

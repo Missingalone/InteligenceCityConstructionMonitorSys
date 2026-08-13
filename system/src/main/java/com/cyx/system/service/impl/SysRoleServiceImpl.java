@@ -17,6 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 角色服务实现 — 角色 CRUD、菜单授权、角色详情（含已分配菜单ID）。
+ * <p>
+ * 菜单授权采用全量替换策略：前端传完整的菜单ID列表，服务端先删后增。
+ */
 @Service
 public class SysRoleServiceImpl implements SysRoleService {
 
@@ -35,10 +40,23 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
+    public RoleVO getById(Long id) {
+        RoleVO vo = toVO(requireRole(id));
+        // 查询该角色已分配的菜单ID列表，前端初始化权限树时使用
+        List<Long> menuIds = roleMenuMapper.selectList(
+                Wrappers.<SysRoleMenu>lambdaQuery().eq(SysRoleMenu::getRoleId, id))
+                .stream().map(SysRoleMenu::getMenuId).toList();
+        vo.setMenuIds(menuIds);
+        return vo;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long save(RoleSaveDTO dto) {
         SysRole role = dto.getId() == null ? new SysRole() : requireRole(dto.getId());
         long sameCode = roleMapper.selectCount(Wrappers.<SysRole>lambdaQuery()
-                .eq(SysRole::getRoleCode, dto.getRoleCode()).ne(dto.getId() != null, SysRole::getId, dto.getId()));
+                .eq(SysRole::getRoleCode, dto.getRoleCode())
+                .ne(dto.getId() != null, SysRole::getId, dto.getId()));
         if (sameCode > 0) {
             throw new BusException("角色编码已存在");
         }
@@ -55,6 +73,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
         requireRole(id);
+        // 删除角色时级联删除角色-菜单关联
         roleMenuMapper.delete(Wrappers.<SysRoleMenu>lambdaQuery().eq(SysRoleMenu::getRoleId, id));
         roleMapper.deleteById(id);
     }
@@ -63,6 +82,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Transactional(rollbackFor = Exception.class)
     public void assignMenus(RoleMenuAssignDTO dto) {
         requireRole(dto.getRoleId());
+        // 全量替换：先清空旧权限，再插入新权限
         roleMenuMapper.delete(Wrappers.<SysRoleMenu>lambdaQuery().eq(SysRoleMenu::getRoleId, dto.getRoleId()));
         for (Long menuId : dto.getMenuIds() == null ? Collections.<Long>emptyList() : dto.getMenuIds()) {
             SysRoleMenu relation = new SysRoleMenu();

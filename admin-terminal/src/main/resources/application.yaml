@@ -11,6 +11,41 @@ server:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
 auth:
   jwt:
     secret: ${AUTH_JWT_SECRET}
+logging:
+  level:
+    root: INFO
+
+    # Spring
+    org.springframework: INFO
+
+    # MyBatis SQL
+    com.baomidou.mybatisplus: DEBUG
+    org.mybatis: DEBUG
+
+    # JDBC SQL
+    java.sql: DEBUG
+
+    # 数据库连接池
+    com.zaxxer.hikari: DEBUG
+
+    # Nacos
+    com.alibaba.nacos: INFO
+
+    # Dubbo
+    org.apache.dubbo: INFO
+
+    # 自己项目代码
+    com.cyx: DEBUG
+
+  # 日志输出格式
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"

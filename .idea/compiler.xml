@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="common" />
+        <module name="auth" />
+      </profile>
+      <profile name="Annotation profile for InteligenceCityMonitorSys" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar" />
+        </processorPath>
+        <module name="system" />
+        <module name="Supervisor-Terminal" />
+        <module name="admin-terminal" />
+        <module name="enterprise-terminal" />
+        <module name="Public-Terminal" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="admin-terminal (1)" target="1.5" />
+      <module name="enterprise-terminal (1)" target="1.5" />
+      <module name="Public-Terminal (1)" target="1.5" />
+      <module name="Supervisor-Terminal (1)" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="InteligenceCityMonitorSys" options="-parameters" />
+      <module name="Public-Terminal" options="-parameters" />
+      <module name="Supervisor-Terminal" options="-parameters" />
+      <module name="admin-terminal" options="-parameters" />
+      <module name="auth" options="-parameters" />
+      <module name="common" options="-parameters" />
+      <module name="enterprise-terminal" options="-parameters" />
+      <module name="system" options="-parameters" />
+    </option>
+  </component>
+</project>
