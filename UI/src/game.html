@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>俄罗斯方块</title>
+<style>
+body {
+    background:#222;
+    color:white;
+    text-align:center;
+    font-family:Arial;
+}
+canvas {
+    background:#000;
+    border:3px solid #fff;
+}
+</style>
+</head>
+
+<body>
+
+<h1>俄罗斯方块</h1>
+<p>方向键移动 | ↑旋转 | 空格快速下降</p >
+
+<canvas id="game" width="300" height="600"></canvas>
+
+<h2 id="score">分数:0</h2>
+
+<script>
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+const ROW=20;
+const COL=10;
+const SIZE=30;
+
+let board=[];
+
+for(let r=0;r<ROW;r++){
+    board[r]=Array(COL).fill(0);
+}
+
+
+const shapes=[
+[[1,1,1,1]],
+
+[[1,1],
+ [1,1]],
+
+[[0,1,0],
+ [1,1,1]],
+
+[[1,0,0],
+ [1,1,1]],
+
+[[0,0,1],
+ [1,1,1]],
+
+[[0,1,1],
+ [1,1,0]],
+
+[[1,1,0],
+ [0,1,1]]
+];
+
+
+let colors=[
+"cyan",
+"yellow",
+"purple",
+"blue",
+"orange",
+"green",
+"red"
+];
+
+
+let piece={
+x:3,
+y:0,
+shape:null,
+color:null
+};
+
+
+let score=0;
+
+
+function newPiece(){
+
+let i=Math.floor(Math.random()*shapes.length);
+
+piece.shape=shapes[i];
+
+piece.color=colors[i];
+
+piece.x=3;
+piece.y=0;
+
+}
+
+
+function draw(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+
+for(let r=0;r<ROW;r++){
+
+for(let c=0;c<COL;c++){
+
+if(board[r][c]){
+
+ctx.fillStyle=board[r][c];
+
+ctx.fillRect(
+c*SIZE,
+r*SIZE,
+SIZE-1,
+SIZE-1
+);
+
+}
+
+}
+
+}
+
+
+piece.shape.forEach((row,y)=>{
+
+row.forEach((value,x)=>{
+
+if(value){
+
+ctx.fillStyle=piece.color;
+
+ctx.fillRect(
+(piece.x+x)*SIZE,
+(piece.y+y)*SIZE,
+SIZE-1,
+SIZE-1
+);
+
+}
+
+});
+
+});
+
+
+}
+
+
+function collision(){
+
+return piece.shape.some((row,y)=>
+
+row.some((v,x)=>
+
+v &&
+(
+piece.x+x<0 ||
+piece.x+x>=COL ||
+piece.y+y>=ROW ||
+board[piece.y+y]?.[piece.x+x]
+)
+
+));
+
+}
+
+
+
+function merge(){
+
+piece.shape.forEach((row,y)=>{
+
+row.forEach((v,x)=>{
+
+if(v){
+
+board[piece.y+y][piece.x+x]=piece.color;
+
+}
+
+});
+
+});
+
+}
+
+
+function clear(){
+
+for(let r=ROW-1;r>=0;r--){
+
+if(board[r].every(v=>v)){
+
+board.splice(r,1);
+
+board.unshift(Array(COL).fill(0));
+
+score+=100;
+
+document.getElementById("score").innerHTML=
+"分数:"+score;
+
+r++;
+
+}
+
+}
+
+}
+
+
+
+function moveDown(){
+
+piece.y++;
+
+if(collision()){
+
+piece.y--;
+
+merge();
+
+clear();
+
+newPiece();
+
+if(collision()){
+
+alert("游戏结束！分数："+score);
+
+location.reload();
+
+}
+
+}
+
+}
+
+
+
+function rotate(){
+
+let old=piece.shape;
+
+piece.shape=
+piece.shape[0].map((_,i)=>
+piece.shape.map(row=>row[i]).reverse()
+);
+
+if(collision())
+piece.shape=old;
+
+}
+
+
+
+document.addEventListener(
+"keydown",
+e=>{
+
+if(e.key=="ArrowLeft"){
+
+piece.x--;
+
+if(collision())piece.x++;
+
+}
+
+else if(e.key=="ArrowRight"){
+
+piece.x++;
+
+if(collision())piece.x--;
+
+}
+
+else if(e.key=="ArrowDown"){
+
+moveDown();
+
+}
+
+else if(e.key=="ArrowUp"){
+
+rotate();
+
+}
+
+else if(e.code=="Space"){
+
+while(!collision()){
+
+piece.y++;
+
+}
+
+piece.y--;
+
+merge();
+
+clear();
+
+newPiece();
+
+}
+
+draw();
+
+});
+
+
+newPiece();
+
+setInterval(()=>{
+
+moveDown();
+
+draw();
+
+},500);
+
+
+</script>
+
+</body>
+</html>

@@ -27,6 +27,7 @@
     <bytecodeTargetLevel>
       <module name="admin-terminal (1)" target="1.5" />
       <module name="enterprise-terminal (1)" target="1.5" />
+      <module name="InteligenceCityMonitorSys" target="1.8" />
       <module name="Public-Terminal (1)" target="1.5" />
       <module name="Supervisor-Terminal (1)" target="1.5" />
     </bytecodeTargetLevel>

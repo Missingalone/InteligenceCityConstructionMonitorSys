@@ -1,0 +1,2 @@
+<script setup lang="ts">import DashboardOverview from '@/components/dashboard/DashboardOverview.vue'</script>
+<template><div class="view-page"><div class="page-head"><div><p class="page-eyebrow">CITY CONSTRUCTION COMMAND CENTER</p><h1 class="page-title">首页驾驶舱</h1><p class="page-subtitle">项目、视频、设备、基坑与报警一体化安全态势</p></div><div class="sync-status"><i class="live-dot"/>30 秒自动刷新</div></div><DashboardOverview/></div></template>

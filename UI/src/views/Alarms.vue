@@ -1,0 +1,1 @@
+<script setup lang="ts">import AlarmCenter from '@/components/alarm/AlarmCenter.vue'</script><template><div class="view-page"><div class="page-head"><div><p class="page-eyebrow">UNIFIED ALARM COMMAND</p><h1 class="page-title">统一报警中心</h1><p class="page-subtitle">报警发现、确认、处理、关闭与整改复查闭环</p></div></div><AlarmCenter/></div></template>

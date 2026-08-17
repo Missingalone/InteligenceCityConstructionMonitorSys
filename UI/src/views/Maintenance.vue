@@ -1,0 +1,1 @@
+<script setup lang="ts">import MaintenanceList from '@/components/maintenance/MaintenanceList.vue'</script><template><div class="view-page"><div class="page-head"><div><p class="page-eyebrow">MAINTENANCE MANAGEMENT</p><h1 class="page-title">设备维护管理</h1><p class="page-subtitle">维修、保养、检查、年检与到期提醒</p></div></div><MaintenanceList/></div></template>

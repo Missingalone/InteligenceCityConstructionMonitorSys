@@ -1,0 +1,1 @@
+<script setup lang="ts">import AlarmRuleList from '@/components/alarm/AlarmRuleList.vue'</script><template><div class="view-page"><div class="page-head"><div><p class="page-eyebrow">MONITORING CONFIGURATION</p><h1 class="page-title">监测配置</h1><p class="page-subtitle">设备监测指标和报警阈值规则配置</p></div></div><AlarmRuleList/></div></template>

@@ -1,0 +1,1 @@
+<script setup lang="ts">import CameraList from '@/components/camera/CameraList.vue'</script><template><div class="view-page"><div class="page-head"><div><p class="page-eyebrow">VIDEO RESOURCE MANAGEMENT</p><h1 class="page-title">摄像头管理</h1><p class="page-subtitle">摄像头档案、在线状态、实时视频与空间位置</p></div></div><CameraList/></div></template>
