@@ -1,0 +1,1 @@
+<script setup lang="ts">import FoundationPitList from '@/components/foundationPit/FoundationPitList.vue'</script><template><div class="view-page"><div class="page-head"><div><p class="page-eyebrow">FOUNDATION PIT SAFETY</p><h1 class="page-title">基坑管理</h1><p class="page-subtitle">基坑档案、监测点、趋势分析和风险报警</p></div></div><FoundationPitList/></div></template>

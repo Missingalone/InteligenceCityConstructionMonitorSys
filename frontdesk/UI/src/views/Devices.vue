@@ -1,0 +1,1 @@
+<script setup lang="ts">import DeviceList from '@/components/device/DeviceList.vue'</script><template><div class="view-page"><div class="page-head"><div><p class="page-eyebrow">EQUIPMENT ASSET MANAGEMENT</p><h1 class="page-title">设备管理</h1><p class="page-subtitle">设备档案、在线状态、检修维护和报警关联</p></div></div><DeviceList/></div></template>
